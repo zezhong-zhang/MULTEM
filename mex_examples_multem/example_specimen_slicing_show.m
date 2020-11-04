@@ -5,7 +5,7 @@ addpath([fileparts(pwd) filesep 'mex_bin'])
 addpath([fileparts(pwd) filesep 'crystalline_materials'])
 addpath([fileparts(pwd) filesep 'matlab_functions'])
 
-input_multem = ilm_dflt_input_multem();         % Load default values;
+input_multem = multem_input.parameters;         % Load default values;
 
 input_multem.pn_model = 1;                      % ePM_Still_Atom = 1, ePM_Absorptive = 2, ePM_Frozen_Phonon = 3
 input_multem.interaction_model = 1;             % eESIM_Multislice = 1, eESIM_Phase_Object = 2, eESIM_Weak_Phase_Object = 3
@@ -19,24 +19,24 @@ input_multem.spec_rot_u0 = [1 0 0]; 					% unitary vector
 input_multem.spec_rot_center_type = 1; 			% 1: geometric center, 2: User define		
 input_multem.spec_rot_center_p = [0 0 0];					% rotation point
 
-na = 4; nb = 4; nc = 10; ncu = 4; rms3d = 0.08;
+na = 4; nb = 4; nc = 10; ncu = 4; rmsd_3d = 0.08;
 
 [input_multem.spec_atoms, input_multem.spec_lx...
 , input_multem.spec_ly, input_multem.spec_lz...
-, a, b, c, input_multem.spec_dz] = GaAs001_xtl(na, nb, nc, ncu, rms3d);
+, a, b, c, input_multem.spec_dz] = GaAs001_xtl(na, nb, nc, ncu, rmsd_3d);
 
 input_multem.spec_dz = 5;
 % get spec slicing
 tic;
 input_multem.pn_model = 1;
-[atoms0, Slice0] = il_spec_slicing(input_multem);
+[atoms0, Slice0] = ilc_spec_slicing(input_multem.toStruct);
 toc;
 
 [nslice0, ~] = size(Slice0);
 
 tic;
 input_multem.pn_model = 3;
-[atoms, Slice] = il_spec_slicing(input_multem);
+[atoms, Slice] = ilc_spec_slicing(input_multem.toStruct);
 toc;
 
 [nslice, ~] = size(Slice);

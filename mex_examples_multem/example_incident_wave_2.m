@@ -1,4 +1,4 @@
-% output_multislice = il_multem(system_conf, input_multem) perform TEM simulation
+% output_multislice = input_multem.ilc_multem perform TEM simulation
 % Incident wave simulation
 % All parameters of the input_multem structure are explained in ilm_dflt_input_multem()
 % Copyright 2020 Ivan Lobato <Ivanlh20@gmail.com>
@@ -8,12 +8,12 @@ addpath([fileparts(pwd) filesep 'mex_bin'])
 addpath([fileparts(pwd) filesep 'crystalline_materials'])
 addpath([fileparts(pwd) filesep 'matlab_functions'])
 
-input_multem = ilm_dflt_input_multem();         % Load default values;
+input_multem = multem_input.parameters;         % Load default values;
 
-system_conf.precision = 1;                     % eP_Float = 1, eP_double = 2
-system_conf.device = 2;                        % eD_CPU = 1, eD_GPU = 2
-system_conf.cpu_nthread = 4; 
-system_conf.gpu_device = 0;
+input_multem.system_conf.precision = 1;                     % eP_Float = 1, eP_double = 2
+input_multem.system_conf.device = 2;                        % eD_CPU = 1, eD_GPU = 2
+input_multem.system_conf.cpu_nthread = 4; 
+input_multem.system_conf.gpu_device = 0;
 
 input_multem.E_0 = 200;                          % Acceleration Voltage (keV)
 input_multem.theta = 0.0;
@@ -33,18 +33,18 @@ input_multem.iw_y = 0.0;    % y position
 
 %%%%%%%%%%%%%%%%%%%%%%%% condenser lens %%%%%%%%%%%%%%%%%%%%%%%%
 input_multem.cond_lens_m = 0;                  % Vortex momentum
-input_multem.cond_lens_c_10 = -15.836;         % Defocus (Å)
+input_multem.cond_lens_c_10 = -15.836;         % Defocus (ï¿½)
 input_multem.cond_lens_c_30 = 1e-03;           % Third order spherical aberration (mm)
 input_multem.cond_lens_c_50 = 0.00;            % Fifth order spherical aberration (mm)
-input_multem.cond_lens_c_12 = 0.0;             % Twofold astigmatism (Å)
-input_multem.cond_lens_phi_12 = 0.0;           % Azimuthal angle of the twofold astigmatism (º)
-input_multem.cond_lens_c_23 = 0.0;             % Threefold astigmatism (Å)
-input_multem.cond_lens_phi_23 = 0.0;           % Azimuthal angle of the threefold astigmatism (º)
+input_multem.cond_lens_c_12 = 0.0;             % Twofold astigmatism (ï¿½)
+input_multem.cond_lens_phi_12 = 0.0;           % Azimuthal angle of the twofold astigmatism (ï¿½)
+input_multem.cond_lens_c_23 = 0.0;             % Threefold astigmatism (ï¿½)
+input_multem.cond_lens_phi_23 = 0.0;           % Azimuthal angle of the threefold astigmatism (ï¿½)
 input_multem.cond_lens_inner_aper_ang = 0.0;   % Inner aperture (mrad) 
 input_multem.cond_lens_outer_aper_ang = 21.0;  % Outer aperture (mrad)
-input_multem.cond_lens_ti_sigma = 32;                % standard deviation (Å)
+input_multem.cond_lens_ti_sigma = 32;                % standard deviation (ï¿½)
 input_multem.cond_lens_ti_npts = 10;               % # of integration points. It will be only used if illumination_model=4
-input_multem.cond_lens_si_sigma = 0.2;             % standard deviation: For parallel ilumination(Å^-1); otherwise (Å)
+input_multem.cond_lens_si_sigma = 0.2;             % standard deviation: For parallel ilumination(ï¿½^-1); otherwise (ï¿½)
 input_multem.cond_lens_si_rad_npts = 8;             % # of integration points. It will be only used if illumination_model=4
 
 for x = (0.4:0.025:0.6)*input_multem.spec_lx
@@ -56,7 +56,7 @@ for x = (0.4:0.025:0.6)*input_multem.spec_lx
 %         input_multem.iw_y = input_multem.spec_ly/2;
         
         tic;
-        output_incident_wave = il_incident_wave(system_conf, input_multem); 
+        output_incident_wave = input_multem.ilc_incident_wave; 
         toc;
         psi_0 = flipud(output_incident_wave.psi_0);
         figure(2);

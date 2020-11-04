@@ -1,4 +1,4 @@
-% output_multislice = il_multem(system_conf, input_multem) perform TEM simulation
+% output_multislice = input_multem.ilc_multem perform TEM simulation
 % Energy filtered transmission electron microscopy (EFTEM) simulation
 % All parameters of the input_multem structure are explained in ilm_dflt_input_multem()
 % Copyright 2020 Ivan Lobato <Ivanlh20@gmail.com>
@@ -9,13 +9,13 @@ addpath([fileparts(pwd) filesep 'crystalline_materials'])
 addpath([fileparts(pwd) filesep 'matlab_functions'])
 
 %%%%%%%%%%%%%%%%%% Load multem default parameter %%%%%%%%$$%%%%%%%%%
-input_multem = ilm_dflt_input_multem();          % Load default values;
+input_multem = multem_input.parameters;          % Load default values;
 
 %%%%%%%%%%%%%%%%%%%%% Set system configuration %%%%%%%%%%%%%%%%%%%%%
-system_conf.precision = 1;                           % eP_Float = 1, eP_double = 2
-system_conf.device = 2;                              % eD_CPU = 1, eD_GPU = 2
-system_conf.cpu_nthread = 1; 
-system_conf.gpu_device = 0;
+input_multem.system_conf.precision = 1;                           % eP_Float = 1, eP_double = 2
+input_multem.system_conf.device = 2;                              % eD_CPU = 1, eD_GPU = 2
+input_multem.system_conf.cpu_nthread = 1; 
+input_multem.system_conf.gpu_device = 0;
 
 %%%%%%%%%%%%%%%%%%%% Set simulation experiment %%%%%%%%%%%%%%%%%%%%%
 % eTEMST_STEM=11, eTEMST_ISTEM=12, eTEMST_CBED=21, eTEMST_CBEI=22, eTEMST_ED=31, eTEMST_HRTEM=32, eTEMST_PED=41, eTEMST_HCTEM=42, eTEMST_EWFS=51, eTEMST_EWRS=52, 
@@ -38,15 +38,15 @@ input_multem.pn_dim = 110;                       % phonon dimensions (xyz)
 input_multem.pn_seed = 300183;                   % Random seed(frozen phonon)
 
 %%%%%%%%%%%%%%%%%%%%%%% Specimen information %%%%%%%%%%%%%%%%%%%%%%%
-na = 8; nb = 8; nc = 5; ncu = 2; rms3d = 0.085;
+na = 8; nb = 8; nc = 5; ncu = 2; rmsd_3d = 0.085;
 
 [input_multem.spec_atoms, input_multem.spec_lx...
 , input_multem.spec_ly, input_multem.spec_lz...
-, a, b, c, input_multem.spec_dz] = SrTiO3001_xtl(na, nb, nc, ncu, rms3d);
+, a, b, c, input_multem.spec_dz] = SrTiO3001_xtl(na, nb, nc, ncu, rmsd_3d);
 
 %%%%%%%%%%%%%%%%%%%%%% Specimen thickness %%%%%%%%%%%%%%%%%%%%%%%%%%
 input_multem.thick_type = 1;                     % eTT_Whole_Spec = 1, eTT_Through_Thick = 2, eTT_Through_Slices = 3
-input_multem.thick = 0;                          % Array of thickes (Å)
+input_multem.thick = 0;                          % Array of thickes (ï¿½)
 
 %%%%%%%%%%%%%%%%%%%%%% x-y sampling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 input_multem.nx = 1024;
@@ -55,8 +55,8 @@ input_multem.bwl = 0;                            % Band-width limit, 1: true, 0:
 
 %%%%%%%%%%%%%%%%%%%% Microscope parameters %%%%%%%%%%%%%%%%%%%%%%%%%%
 input_multem.E_0 = 300;                          % Acceleration Voltage (keV)
-input_multem.theta = 0.0;                        % Till ilumination (º)
-input_multem.phi = 0.0;                          % Till ilumination (º)
+input_multem.theta = 0.0;                        % Till ilumination (ï¿½)
+input_multem.phi = 0.0;                          % Till ilumination (ï¿½)
 
 %%%%%%%%%%%%%%%%%%%%%% Illumination model %%%%%%%%%%%%%%%%%%%%%%%%%%
 input_multem.illumination_model = 1;             % 1: coherente mode, 2: Partial coherente mode, 3: transmission cross coefficient, 4: Numerical integration
@@ -70,24 +70,24 @@ input_multem.iw_y = input_multem.spec_ly/2;     % y position
 
 %%%%%%%%%%%%%%%%%%%%%%%% condenser lens %%%%%%%%%%%%%%%%%%%%%%%%
 input_multem.cond_lens_m = 0;                   % Vortex momentum
-input_multem.cond_lens_c_10 = 88.7414;             % Defocus (Å)
+input_multem.cond_lens_c_10 = 88.7414;             % Defocus (ï¿½)
 input_multem.cond_lens_c_30 = 0.04;              % Third order spherical aberration (mm)
 input_multem.cond_lens_c_50 = 0.00;              % Fifth order spherical aberration (mm)
-input_multem.cond_lens_c_12 = 0.0;              % Twofold astigmatism (Å)
-input_multem.cond_lens_phi_12 = 0.0;              % Azimuthal angle of the twofold astigmatism (º)
-input_multem.cond_lens_c_23 = 0.0;              % Threefold astigmatism (Å)
-input_multem.cond_lens_phi_23 = 0.0;              % Azimuthal angle of the threefold astigmatism (º)
+input_multem.cond_lens_c_12 = 0.0;              % Twofold astigmatism (ï¿½)
+input_multem.cond_lens_phi_12 = 0.0;              % Azimuthal angle of the twofold astigmatism (ï¿½)
+input_multem.cond_lens_c_23 = 0.0;              % Threefold astigmatism (ï¿½)
+input_multem.cond_lens_phi_23 = 0.0;              % Azimuthal angle of the threefold astigmatism (ï¿½)
 input_multem.cond_lens_inner_aper_ang = 0.0;    % Inner aperture (mrad) 
 input_multem.cond_lens_outer_aper_ang = 21.0;   % Outer aperture (mrad)
 
 %%%%%%%%% defocus spread function %%%%%%%%%%%%
-dsf_sigma = il_iehwgd_2_sigma(32); % from defocus spread to standard deviation
-input_multem.cond_lens_ti_sigma = dsf_sigma;   % standard deviation (Å)
+dsf_sigma = ilc_iehwgd_2_sigma(32); % from defocus spread to standard deviation
+input_multem.cond_lens_ti_sigma = dsf_sigma;   % standard deviation (ï¿½)
 input_multem.cond_lens_ti_npts = 5;         % # of integration points. It will be only used if illumination_model=4
 
 %%%%%%%%%% source spread function %%%%%%%%%%%%
-ssf_sigma = il_mrad_2_sigma(input_multem.E_0, 0.02);  % mrad to standard deviation
-input_multem.obj_lens_ssf_sigma = ssf_sigma;          % standard deviation: For parallel ilumination(Å^-1); otherwise (Å)
+ssf_sigma = ilc_mrad_2_sigma(input_multem.E_0, 0.02);  % mrad to standard deviation
+input_multem.obj_lens_ssf_sigma = ssf_sigma;          % standard deviation: For parallel ilumination(ï¿½^-1); otherwise (ï¿½)
 input_multem.obj_lens_ssf_npoints = 4;                % # of integration points. It will be only used if illumination_model=4
 
 %%%%%%%%% zero defocus reference %%%%%%%%%%%%
@@ -96,16 +96,16 @@ input_multem.cond_lens_zero_defocus_plane = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%% Objective lens %%%%%%%%%%%%%%%%%%%%%%%%
 input_multem.obj_lens_m = 0;                    % Vortex momentum
-input_multem.obj_lens_c_10 = 0;                    % Defocus (Å)
+input_multem.obj_lens_c_10 = 0;                    % Defocus (ï¿½)
 input_multem.obj_lens_c_30 = 0;                  % Third order spherical aberration (mm)
 input_multem.obj_lens_c_50 = 0.00;               % Fifth order spherical aberration (mm)
-input_multem.obj_lens_c_12 = 0.0;               % Twofold astigmatism (Å)
-input_multem.obj_lens_phi_12 = 0.0;               % Azimuthal angle of the twofold astigmatism (º)
-input_multem.obj_lens_c_23 = 0.0;               % Threefold astigmatism (Å)
-input_multem.obj_lens_phi_23 = 0.0;               % Azimuthal angle of the threefold astigmatism (º)
+input_multem.obj_lens_c_12 = 0.0;               % Twofold astigmatism (ï¿½)
+input_multem.obj_lens_phi_12 = 0.0;               % Azimuthal angle of the twofold astigmatism (ï¿½)
+input_multem.obj_lens_c_23 = 0.0;               % Threefold astigmatism (ï¿½)
+input_multem.obj_lens_phi_23 = 0.0;               % Azimuthal angle of the threefold astigmatism (ï¿½)
 input_multem.obj_lens_inner_aper_ang = 0.0;     % Inner aperture (mrad) 
 input_multem.obj_lens_outer_aper_ang = 0.0;     % Outer aperture (mrad)
-input_multem.obj_lens_ti_sigma = 32;                  % standard deviation (Å)
+input_multem.obj_lens_ti_sigma = 32;                  % standard deviation (ï¿½)
 input_multem.obj_lens_ti_npts = 10;                 % # integration steps for the defocus Spread. It will be only used if illumination_model=4
 input_multem.obj_lens_zero_defocus_type = 3;    % eZDT_First = 1, eZDT_Middle = 2, eZDT_Last = 3, eZDT_User_Define = 4
 input_multem.obj_lens_zero_defocus_plane = 0;   % It will be only used if obj_lens_zero_defocus_type = eZDT_User_Define
@@ -128,9 +128,9 @@ input_multem.eftem_channelling_type = 1;        % eCT_Single_Channelling = 1, eC
 input_multem.eftem_collection_angle = 50;       % Collection half angle (mrad)
 input_multem.eftem_Z = 38;                      % atomic type
 
-clear il_multem;
+clear ilc_multem;
 tic;
-output_multislice = il_multem(system_conf, input_multem); 
+output_multislice = input_multem.ilc_multem; 
 toc;
 
 figure(1);

@@ -5,9 +5,9 @@ addpath([fileparts(pwd) filesep 'mex_bin'])
 addpath([fileparts(pwd) filesep 'crystalline_materials'])
 addpath([fileparts(pwd) filesep 'matlab_functions'])
 
-na = 20; nb = 20; nc = 30; ncu = 2; rms3d = 0.085;
+na = 20; nb = 20; nc = 30; ncu = 2; rmsd_3d = 0.085;
 
-[atoms, lx, ly, ~, a, b, c, input_multem.spec_dz] = Au001_xtl(na, nb, nc, ncu, rms3d);
+[atoms, lx, ly, ~, a, b, c, input_multem.spec_dz] = Au001_xtl(na, nb, nc, ncu, rmsd_3d);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 lz = 20;
 Z = 6;
@@ -18,7 +18,7 @@ rho = 2.2;
 lay_pos = 1; %1: top, 2: bottom
 
 tic;
-atoms = il_add_amorp_lay(atoms, lx, ly, lz, d_min, Z, rms_3d, rho, lay_pos, seed);
+atoms = ilc_add_amorp_lay(atoms, lx, ly, lz, d_min, Z, rms_3d, rho, lay_pos, seed);
 toc;
 
 ilm_show_crystal(1, atoms)
@@ -35,6 +35,6 @@ disp([min(atoms(:, 4)), max(atoms(:,4))])
 
 figure(2); clf;
 tic;
-[r, rdf] = il_rdf_3d(atoms, 8, 200);
+[r, rdf] = ilc_rdf_3d(atoms, 8, 200);
 toc;
 plot(r, rdf,'-+r');

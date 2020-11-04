@@ -6,20 +6,19 @@ addpath([fileparts(pwd) filesep 'crystalline_materials'])
 addpath([fileparts(pwd) filesep 'matlab_functions'])
 
 Z = 79;
-occ = 1;
-region = 0;
-charge = 0;
+charge = 1;
 
 rmin = 1e-02; rmax = 5.0; nr = 512;
 dlnr = log(rmax/rmin)/(nr-1); r = rmin*exp((0:1:(nr-1))*dlnr);
+z0 = -8.0; ze = 8.0;
 
 tic;
-[f1, df1] = il_vr(1, Z, charge, r);
-[f2, df2] = il_vr(2, Z, charge, r);
-[f3, df3] = il_vr(3, Z, charge, r);
-[f4, df4] = il_vr(4, Z, charge, r);
-[f5, df5] = il_vr(5, Z, charge, r);
-[f6, df6] = il_vr(6, Z, charge, r);
+[f1, df1] = ilc_vz(1, Z, charge, z0, ze, r);
+[f2, df2] = ilc_vz(2, Z, charge, z0, ze, r);
+[f3, df3] = ilc_vz(3, Z, charge, z0, ze, r);
+[f4, df4] = ilc_vz(4, Z, charge, z0, ze, r);
+[f5, df5] = ilc_vz(5, Z, charge, z0, ze, r);
+[f6, df6] = ilc_vz(6, Z, charge, z0, ze, r);
 toc;
 
 figure(1); clf;
