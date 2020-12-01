@@ -132,6 +132,10 @@ namespace mt
 						Projected_Potential<T, dev>::operator()(islice, this->V_0);
 						trans(this->input_multislice->Vr_factor(), this->V_0, trans_v[islice]);
 					}
+					if (memory_slice.is_ionsied())
+					{
+						Projected_Potential<T, dev>::operator()(islice, ionised_v[islice]);
+					}
 				}
 			}
 
@@ -149,6 +153,7 @@ namespace mt
 					int n_slice_req;
 					int n_slice_Allow;
 					eSlice_Memory_Type slice_mem_type;
+					eSlice_Memory_Type_ionised slice_mem_type_ionised;
 
 					Memory_Slice(): n_slice_req(0), n_slice_Allow(0), slice_mem_type(eSMT_none){}
 
@@ -156,6 +161,8 @@ namespace mt
 					{
 						n_slice_req = n_slice_Allow = 0;
 						slice_mem_type = eSMT_none;
+						slice_mem_type_ionised = eSMT_Ionised_none;
+
 					}
 
 					void set_input_data(const int &nSlice_req_i, const int &nxy_i)
@@ -178,6 +185,10 @@ namespace mt
 						if(n_slice_Allow == 0 )
 						{
 							slice_mem_type = eSMT_none;
+						}
+						if(this->input_multislice.is_EDX())
+						{
+							slice_mem_type_ionised = eSMT_Ionised;
 						}
 					}
 
@@ -206,6 +217,11 @@ namespace mt
 						return slice_mem_type == eSMT_Potential;
 					}
 
+					bool is_ionsied() const
+					{
+						return slice_mem_type_ionised == eSMT_Ionised;
+					}
+
 				private:
 					template <class U>
 					int number_slices(const double &memory, const int &nxy)
@@ -219,6 +235,7 @@ namespace mt
 		protected:
 			Vector<Vector<T_c, dev>, e_host> trans_v;
 			Vector<Vector<T_r, dev>, e_host> Vp_v;
+			Vector<Vector<T_r, dev>, e_host> ionised_v;	
 
 			FFT<T_r, dev> *fft_2d;
 	};

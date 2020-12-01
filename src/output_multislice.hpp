@@ -1206,7 +1206,7 @@ namespace mt
 
 		void set_output_grid()
 		{
-			if (this->is_STEM() || this->is_EELS())
+			if (this->is_STEM() || this->is_EELS() || this->is_EDX())
 			{
  				nx = this->scanning.nx;
 				ny = this->scanning.ny;
@@ -1248,7 +1248,7 @@ namespace mt
 		// 5:(m2psi_tot, psi_coh); 6:(psi_coh); 7:(psi_0); 8:(V); 9:(trans)
 		void set_output_type()
 		{
-			if (this->is_STEM() || this->is_EELS())
+			if (this->is_STEM() || this->is_EELS() || this->is_EDX())
 			{
 				output_type = (this->pn_coh_contrib) ? eTEMOT_image_tot_coh : eTEMOT_image_tot;
 			}

@@ -283,12 +283,16 @@ namespace mt
 				}
 			}
 
+
+
 			Q1<T, dev> qz;
 			Vector<Atom_Type<T, dev>, e_host> atom_type; // Atom types
 
 			Stream_Data stream_data;
 			Vector<Atom_Vp<T>, e_host> atom_Vp_h;
 			Vector<Atom_Vp<T>, dev> atom_Vp;
+			Vector<Atom_Vp<T>, e_host> ionised_Vp_h;
+			Vector<Atom_Vp<T>, dev> ionised_Vp;
 	};
 
 } // namespace mt

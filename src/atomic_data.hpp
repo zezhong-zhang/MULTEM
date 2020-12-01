@@ -1296,6 +1296,7 @@ data_table[102].edges[0] = 0.00;	data_table[102].edges[1] = 0.00;	data_table[102
 				data_table[91].feg[12].cl[0]= 0.6870000000;	data_table[91].feg[12].cnl[0]= 0.1540000000;	data_table[91].feg[12].cl[1]= 1.1400000000;	data_table[91].feg[12].cnl[1]= 0.8610000000;	data_table[91].feg[12].cl[2]= 1.8300000000;	data_table[91].feg[12].cnl[2]= 2.5800000000;	data_table[91].feg[12].cl[3]= 2.5300000000;	data_table[91].feg[12].cnl[3]= 7.7000000000;	data_table[91].feg[12].cl[4]= 0.9570000000;	data_table[91].feg[12].cnl[4]= 15.9000000000;
 			}
 
+			void load
 			// 1: Doyle and Turner parameterization - 4 Gaussians - [0, 4]
 			// 2: Peng et al. parameterization - 5 Gaussians - [0, 4]
 			// 3: Peng et al. parameterization - 5 Gaussians - [0, 12]

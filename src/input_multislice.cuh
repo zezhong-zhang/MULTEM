@@ -224,6 +224,10 @@ namespace mt
 	{
 		return sim_type == mt::eTEMST_EELS;
 	}
+		bool is_EDX(const eTEM_Sim_Type &sim_type)
+	{
+		return sim_type == mt::eTEMST_EDX;
+	}
 
 	inline
 		bool is_EFTEM(const eTEM_Sim_Type &sim_type)
@@ -512,6 +516,8 @@ namespace mt
 		Detector<T, e_host> detector; 						// STEM Detectors
 
 		EELS<T> eels_fr; 									// EELS
+
+
 
 		eOperation_Mode operation_mode;						// eOM_Normal = 1, eOM_Advanced = 2
 		bool slice_storage;									// true, false

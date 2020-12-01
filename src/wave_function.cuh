@@ -244,9 +244,9 @@ namespace mt
 
 				for(auto islice = 0; islice<this->slicing.slice.size(); islice++)
 				{
-					psi_slice(gx_0, gy_0, islice, psi_z);
+					psi_slice(gx_0, gy_0, islice, psi_z); //call psi_slice above
 
-					set_m2psi_tot_psi_coh(psi_z, gx_0, gy_0, islice, w_i, output_multislice);
+					set_m2psi_tot_psi_coh(psi_z, gx_0, gy_0, islice, w_i, output_multislice); // compute the intensity of the signal mode with wavefunction psi_z 
 				}
 			}
 
@@ -312,6 +312,24 @@ namespace mt
 
 				set_incident_wave(psi, beam_x, beam_y);
 			}
+			template <class TOutput_multislice>
+			void incoherent_imaging(T_r w_i, TVector_c &psi_z, TIonised_Potential &ionised_potential,TOutput_multislice &output_multislice)
+				{
+					T_r gx_0 = this->input_multislice->gx_0();
+					T_r gy_0 = this->input_multislice->gy_0();
+
+					for(auto islice = 0; islice<this->slicing.slice.size(); islice++)
+					{	
+						for (auto ielement= 0; ielement<total number of element within this slice; ielement++) 
+						{						
+						int iscan = this->input_multislice->iscan[0];
+						T_r int_val = 0; 
+						int_val = w_i*mt::sum_square_over_pot(*(this->stream), this->input_multislice->grid_2d, ionised_potential.slices[islice].element[ielement], psi_z);
+						output_multislice.image_tot[islice].image[ielement][iscan]=+int_val;
+						}
+						psi_slice(gx_0, gy_0, islice, psi_z); //call psi_slice above
+					}
+				}
 
 			Propagator<T_r, dev> propagator;
 

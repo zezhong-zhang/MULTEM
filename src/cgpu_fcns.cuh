@@ -1813,6 +1813,15 @@ namespace mt
 			sum += S_i[ixy] * norm(M_i[ixy]);
 		}
 
+		template <class TGrid, class TVector_1, class TVector_2>
+		DEVICE_CALLABLE FORCE_INLINE 
+		void sum_square_over_pot(const int &ix, const int &iy, const TGrid &grid_2d, 
+		const TVector_1 &S_i, const TVector_2 &M_i, Value_type<TGrid> &sum)
+		{
+			const int ixy = grid_2d.ind_col(ix, iy);
+			sum += S_i[ixy] * norm(M_i[ixy]);
+		}
+
 		template <class TGrid, class TVector_c>
 		DEVICE_CALLABLE FORCE_INLINE 
 		void bandwidth_limit(const int &ix, const int &iy, const TGrid &grid_2d, TVector_c &M_io)

@@ -396,6 +396,8 @@ private:
 			case mt::eTEMST_TFRS:
 				setWindowTitle(tr("Transmission function in real space"));
 			break;
+			case mt::eTEMST_EDX:
+				setWindowTitle(tr("STEM energy dispersive X-ray spectroscopy"));	
 		}
 	}
 

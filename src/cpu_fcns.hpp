@@ -1210,6 +1210,31 @@ namespace mt
 		return sum;
 	}
 
+	template <class TGrid, class TVector_1, class TVector_2>
+	enable_if_host_vector_and_host_vector<TVector_1, TVector_2, Value_type<TGrid>>
+		sum_square_over_pot(Stream<e_host> &stream, TGrid &grid_2d, TVector_1 &S_i, TVector_2 &M_i)
+	{
+		using T_r = Value_type<TGrid>;
+
+		T_r sum = 0;
+
+		auto thr_sum_square_over_pot = [&](const Range_2d &range)
+		{
+			T_r sum_partial = 0;
+			host_detail::matrix_iter(range, host_device_detail::sum_square_over_pot<TGrid, TVector_1, TVector_2>, grid_2d, S_i, M_i, sum_partial);
+
+			stream.stream_mutex.lock();
+			sum += sum_partial;
+			stream.stream_mutex.unlock();
+		};
+
+		stream.set_n_act_stream(grid_2d.nx);
+		stream.set_grid(grid_2d.nx, grid_2d.ny);
+		stream.exec(thr_sum_square_over_pot);
+
+		return sum;
+	}
+
 	template <class TGrid, class TVector_c>
 	enable_if_host_vector<TVector_c, void>
 		bandwidth_limit(Stream<e_host> &stream, TGrid &grid_2d, TVector_c &M_io)

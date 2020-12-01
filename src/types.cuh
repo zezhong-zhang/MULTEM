@@ -145,6 +145,11 @@ namespace mt
 		eSMT_Transmission = 1, eSMT_Potential = 2, eSMT_none = 3
 	};
 
+	enum eSlice_Memory_Type_ionised
+	{
+		eSMT_Ionised = 1, eSMT_Ionised_none = 2;
+	}; 
+
 	/******************************Microscope effects*****************************/
 	enum eIllumination_Model
 	{
@@ -201,7 +206,8 @@ namespace mt
 		eTEMST_IWFS = 71, eTEMST_IWRS = 72,
 		eTEMST_PPFS = 81, eTEMST_PPRS = 82, 			// projected potential
 		eTEMST_TFFS = 91, eTEMST_TFRS = 92, 			// transmission function
-		eTEMST_PropFS = 101, eTEMST_PropRS = 102		// propagate
+		eTEMST_PropFS = 101, eTEMST_PropRS = 102,		// propagate
+		eTEMST_EDX = 121
 	};
 
 	/*************************simulation data output*****************************/
