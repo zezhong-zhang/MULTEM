@@ -111,7 +111,7 @@ clear ilc_multem;
 tic;
 output_multislice = input_multem.ilc_multem;
 toc;
-output_multislice
+
 
 figure(1);
 for i=1:length(output_multislice.data)

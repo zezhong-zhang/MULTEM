@@ -176,7 +176,7 @@ namespace mt
 					z_plane.insert(z_plane.begin(), z_plane_top.begin(), z_plane_top.end());
 				}
 
-	 if(bb_ali && (fabs(z_plane.back()-atoms.z_max)>z_eps))
+	if(bb_ali && (fabs(z_plane.back()-atoms.z_max)>z_eps))
 				{
 					T dz_b = get_spacing(z_plane.size()-1, z_plane);
 					auto amorp = atoms.amorp_lay_info.back();

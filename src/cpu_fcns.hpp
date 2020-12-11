@@ -245,8 +245,8 @@ namespace mt
 					if (R2 < atom.R2_max)
 					{
 						const T V = atom.occ*host_device_detail::eval_cubic_poly(R2, atom);
-						const int ixy = grid_2d.ind_col_pbc_shift(ix, iy);
-
+						const int ixy = grid_2d.ind_col_pbc_shift(ix, iy); //ixy is the current grid index
+						
 						atom.iv[iyc] = ixy;
 						atom.v[iyc] = V;
 						iyc++;

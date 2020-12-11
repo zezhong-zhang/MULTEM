@@ -1593,8 +1593,8 @@ namespace mt
 			ixy = grid_2d.ind_col(ix, grid_2d.nyh+iy); 
 			ixy_shift = grid_2d.ind_col(grid_2d.nxh+ix, iy);
 			thrust::swap(M_io[ixy], M_io[ixy_shift]);
-		}
- 
+		} 
+		
  		/***************************************************************************/
   		template <class TGrid, class TVector>
 		DEVICE_CALLABLE FORCE_INLINE 

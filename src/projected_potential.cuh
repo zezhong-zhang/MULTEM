@@ -50,15 +50,15 @@ namespace mt
 				Quadrature quadrature;
 				quadrature(0, c_nqz, qz); // 0: int_-1^1 y(x) dx - TanhSinh quadrature
 
-				atom_type.resize(c_nAtomsTypes);
+				atom_type.resize(c_nAtomsTypes); //TODO: where this is defined?
 				for(auto iatom_type = 0; iatom_type<atom_type.size(); iatom_type++)
 				{
 					atom_type[iatom_type].assign(Spec<T>::atom_type[iatom_type]);
 				}
+				//loop over atom types and initiate atom with spec where asign the potential type. 
+				n_atoms_s = (device==e_host)?(stream->size()):512; // number of stream to process the atoms
 
-				n_atoms_s = (device==e_host)?(stream->size()):512;
-
-				int nv = max(this->input_multislice->grid_2d.nx_dRx(this->atoms.l_x_int), this->input_multislice->grid_2d.ny_dRy(this->atoms.l_y_int));
+				int nv = max(this->input_multislice->grid_2d.nx_dRx(this->atoms.l_x_int), this->input_multislice->grid_2d.ny_dRy(this->atoms.l_y_int)); // maximum number of pixels
 
 				stream_data.resize(n_atoms_s);
 
@@ -66,8 +66,9 @@ namespace mt
 				{
 					if(device==e_host)
 					{
-						stream_data.iv[i].resize(nv);
-						stream_data.v[i].resize(nv);
+						stream_data.iv[i].resize(nv); //iv is the grid index
+						stream_data.v[i].resize(nv); // v is the interopolated potential 
+						stream_data.v_spec[i].resize(nv);
 					}
 
 					if(this->input_multislice->is_subslicing())
@@ -75,14 +76,14 @@ namespace mt
 						stream_data.c0[i].resize(c_nR);
 						stream_data.c1[i].resize(c_nR);
 						stream_data.c2[i].resize(c_nR);
-						stream_data.c3[i].resize(c_nR);
+						stream_data.c3[i].resize(c_nR); //TODO: what is c_nR?
 					}
 				}
 
 				atom_Vp_h.resize(n_atoms_s);
 				atom_Vp.resize(n_atoms_s);
 
-				V_0.resize(this->input_multislice->grid_2d.nxy());
+				V_0.resize(this->input_multislice->grid_2d.nxy()); //total number of pixels nx*ny
 			}
 
 			/************************Host************************/
@@ -189,6 +190,7 @@ namespace mt
 			}
 
 			Vector<T, dev> V_0;
+			Vector<T, dev> V_spec;
 			Stream<dev> *stream;
 		private:
 			int n_atoms_s;
@@ -209,6 +211,7 @@ namespace mt
 				{
 					iv.resize(new_size);
 					v.resize(new_size);
+					v_spec.resize(new_size);
 					c0.resize(new_size);
 					c1.resize(new_size);
 					c2.resize(new_size);
@@ -217,6 +220,7 @@ namespace mt
 
 				Vector<Vector<int, dev>, e_host> iv;
 				Vector<Vector<T, dev>, e_host> v;
+				Vector<Vector<T, dev>, e_host> v_spec;	
 				Vector<Vector<T, dev>, e_host> c0; 		// zero coefficient
 				Vector<Vector<T, dev>, e_host> c1; 		// first coefficient
 				Vector<Vector<T, dev>, e_host> c2; 		// second coefficient
@@ -236,7 +240,7 @@ namespace mt
 					atom_Vp_h[istream].x = this->atoms.x[iatoms];
 					atom_Vp_h[istream].y = this->atoms.y[iatoms];
 					atom_Vp_h[istream].occ = this->atoms.occ[iatoms];
-					atom_Vp_h[istream].R2_min = coef.R2_min();
+					atom_Vp_h[istream].R2_min = coef.R2_min(); //pass the coefficient from atom_type to temp atom.
 					atom_Vp_h[istream].R2_max = coef.R2_max();
 					atom_Vp_h[istream].R2 = raw_pointer_cast(coef.R2.data());
 					atom_Vp_h[istream].set_ix0_ixn(this->input_multislice->grid_2d, coef.R_max);
@@ -248,6 +252,7 @@ namespace mt
 					{
 						atom_Vp_h[istream].iv = raw_pointer_cast(stream_data.iv[istream].data());
 						atom_Vp_h[istream].v = raw_pointer_cast(stream_data.v[istream].data());
+						atom_Vp_h[istream].v_spec = raw_pointer_cast(stream_data.v_spec[istream].data());
 					}
 
 					if(this->input_multislice->is_subslicing())
@@ -271,7 +276,7 @@ namespace mt
 					}
 					iatoms++;
 				}
-				thrust::copy(atom_Vp_h.begin(), atom_Vp_h.begin()+n_atoms, atom_Vp.begin());
+				thrust::copy(atom_Vp_h.begin(), atom_Vp_h.begin()+n_atoms, atom_Vp.begin()); // add the potential of temp atom to total projected potential
 			}
 			
 			void get_cubic_poly_coef_Vz(Stream<dev> &stream, Vector<Atom_Vp<T>, e_host> &atom_Vp)
@@ -283,16 +288,12 @@ namespace mt
 				}
 			}
 
-
-
 			Q1<T, dev> qz;
 			Vector<Atom_Type<T, dev>, e_host> atom_type; // Atom types
 
 			Stream_Data stream_data;
 			Vector<Atom_Vp<T>, e_host> atom_Vp_h;
 			Vector<Atom_Vp<T>, dev> atom_Vp;
-			Vector<Atom_Vp<T>, e_host> ionised_Vp_h;
-			Vector<Atom_Vp<T>, dev> ionised_Vp;
 	};
 
 } // namespace mt
