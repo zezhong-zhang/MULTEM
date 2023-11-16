@@ -2,7 +2,7 @@
 * This file is part of Multem.
 * Copyright 2023 Ivan Lobato <Ivanlh20@gmail.com>
 *
-* Multem is destroy software: you can redistribute it and/or modify
+* Multem is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version of the License, or
 * (at your option) any later version.
@@ -367,6 +367,20 @@ namespace mt
 		Vctr(const pVctr<U, edev_cpu, STU>& pvctr);
 
 #ifdef __CUDACC__
+		/**
+		 * @brief Converting constructor that constructs a new Vctr from a different type of Vctr or GPU-specific containers.
+		 * 
+		 * This constructor allows you to create a new `Vctr` object by converting data from various sources, including:
+		 * - Another `Vctr` of a different data type on the GPU.
+		 * - A `thrust::host_vector` on the GPU.
+		 * - A `thrust::device_vector` on the GPU.
+		 * - A GPU Vctr pointer with an optional storage type.
+		 * 
+		 * @tparam U The data type of the source data or container elements.
+		 * @tparam STU The storage type (only for pVctr conversion).
+		 * @param vctr The source data or container to be converted.
+		 */
+
 		template <class U>
 		Vctr(const Vctr<U, edev_gpu>& vctr);
 
@@ -380,16 +394,43 @@ namespace mt
 		template <class U, class STU>
 		Vctr(const pVctr<U, edev_gpu, STU>& pvctr);
 #endif
+		/**
+		 * @brief Destructor for the Vctr class.
+		 */
 		~Vctr();
 
 		/******************************** assignment operators *********************************/
-		/* copy assignment operator */
+		/**
+		 * @brief Copy assignment operator that assigns the contents of another Vctr of the same type.
+		 * 
+		 * This operator allows you to copy the contents of another `Vctr` object of the same data type on the CPU.
+		 * 
+		 * @param vctr The source `Vctr` object to copy data from.
+		 * @return A reference to the modified Vctr object.
+		 */
 		Vctr<T, edev_cpu>& operator=(const Vctr<T, edev_cpu>& vctr);
 
-			/* Move assignment operator */
+		/**
+		 * @brief Move assignment operator that transfers ownership of another Vctr of the same type.
+		 * 
+		 * This operator allows you to move the contents and ownership of another `Vctr` object of the same data type on the CPU.
+		 * 
+		 * @param vctr The source `Vctr` object to move data from.
+		 * @return A reference to the modified Vctr object.
+		 */
 		Vctr<T, edev_cpu>& operator=(Vctr<T, edev_cpu>&& vctr);
 
-		/* converting assignment operator */
+		/**
+		 * @brief Converting assignment operator that assigns data from another Vctr or a std::vector of a different type.
+		 * 
+		 * This operator allows you to assign data from various sources, including:
+		 * - Another `Vctr` of a different data type on the CPU.
+		 * - A std::vector of a different data type.
+		 * 
+		 * @tparam U The data type of the source data or container elements.
+		 * @param vctr The source data or container to be assigned.
+		 * @return A reference to the modified Vctr object.
+		 */
 		template <class U>
 		Vctr<T, edev_cpu>& operator=(const Vctr<U, edev_cpu>& vctr);
 
@@ -406,14 +447,44 @@ namespace mt
 		template <class U>
 		Vctr<T, edev_cpu>& operator=(const thrust::device_vector<U>& vctr);
 #endif
-
+		/**
+		 * @brief Assigns the content of another Vctr object with a different data type to this Vctr.
+		 * 
+		 * This function copies the content of the provided Vctr object with a potentially different data type
+		 * into this Vctr object, ensuring that both objects have compatible data types. This operation makes
+		 * a deep copy of the data.
+		 * 
+		 * @tparam U The data type of the source Vctr object.
+		 * @param vctr The source Vctr object to copy data from.
+		 * @param pvctr_cpu A pointer to an optional CPU storage location where the data can be copied.
+		 */
 		template <class U>
 		void assign(const Vctr<U, edev_cpu>& vctr, U* pvctr_cpu = nullptr);
 
+		/**
+		 * @brief Assigns a range of data from a CPU pointer to this Vctr.
+		 * 
+		 * This function copies data from a range specified by two pointers, 'first' and 'last', from a CPU
+		 * memory location to this Vctr object. It ensures that the Vctr object is appropriately resized to hold
+		 * the copied data.
+		 * 
+		 * @tparam U The data type of the CPU memory.
+		 * @param first A pointer to the first element of the source data range.
+		 * @param last A pointer one-past-the-end of the source data range.
+		 */
 		template <class U>
 		void assign(U* first, U* last);
 
-		// from cpu pVctr to Vctr
+		/**
+		 * @brief Assigns the content of a CPU pVctr object to this Vctr.
+		 * 
+		 * This function copies the content of a CPU pVctr (pointer for vector) object to this Vctr object.
+		 * It ensures that the data is appropriately copied and that the Vctr object is resized as needed.
+		 * 
+		 * @tparam U The data type of the elements in the pVctr.
+		 * @tparam STU The storage type of the pVctr (e.g., contiguous or strided).
+		 * @param pvctr The source pVctr object to copy data from.
+		 */
 		template <class U, class STU>
 		void assign(const pVctr<U, edev_cpu, STU>& pvctr);
 
@@ -426,6 +497,23 @@ namespace mt
 		void assign(const pVctr<U, edev_gpu, STU>& pvctr);
 #endif
 
+		/**
+		 * @brief Assigns the content of a std::vector to this Vctr.
+		 * 
+		 * This method allows for the assignment of data from a standard C++ vector (`std::vector`)
+		 * to this Vctr instance. It is particularly useful for initializing or updating the Vctr
+		 * with a collection of elements that are already stored in a std::vector. The method
+		 * ensures that the data types are compatible and handles the allocation and copying of
+		 * data internally.
+		 * 
+		 * @tparam U The data type of the elements in the std::vector. This type must be compatible
+		 *           with the data type of the Vctr instance.
+		 * @param vctr The std::vector from which to copy the data. The elements of this vector will
+		 *             be copied into the Vctr.
+		 * @param pvctr_cpu Optional parameter. If provided, it should be a pointer to a pre-allocated
+		 *                  memory space on the CPU where the data from the std::vector can be copied.
+		 *                  If nullptr (default), the method will manage the allocation.
+		 */
 		template <class U>
 		void assign(const std::vector<U>& vctr, U* pvctr_cpu = nullptr);
 
