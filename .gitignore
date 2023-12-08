@@ -437,3 +437,11 @@ matlab_functions/space_groups.mat
 matlab_functions/tfm_check_stem_setup.m
 matlab_functions/ToDiffScale.m
 matlab_functions/xy_projected.mat
+build/
+morph/output.*
+morph/temp*
+googletest/
+CMakeCache.txt
+bin/*
+CMakeFiles/*
+docs/
