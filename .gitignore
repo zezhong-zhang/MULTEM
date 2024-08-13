@@ -34,3 +34,6 @@ EDX
 .vscode
 multem.zip
 multem_stable.zip
+docs/
+CMakeLists.txt
+build/
