@@ -944,6 +944,12 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = include/vctr_cpu.h \
+                        include/wd_fermi.h \
+                        include/border_1d.h \
+                        include/border_2d.h \
+                        include/fft_cpu.h \
+                        include/fcns_cpu.h \
+                        README.md
                         #  src \
                         #  README.md \
                         #  LICENSE.md \
